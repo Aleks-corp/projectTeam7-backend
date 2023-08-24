@@ -1,23 +1,45 @@
 import Joi from "joi";
-
-import { emailRegexp } from "../constants/regexp.js";
+import { categoryList, glassList } from "../constants/constants.js";
 
 const recipeAddSchema = Joi.object({
-  name: Joi.string().required().messages({
-    "string.base": `'name' should be a type of 'text'`,
-    "string.empty": `'name' cannot be an empty field`,
-    "any.required": `missing required 'name' field`,
+  drink: Joi.string().required().messages({
+    "string.base": `'title' should be a type of 'text'`,
+    "string.empty": `'title' cannot be an empty field`,
+    "any.required": `missing required 'title' field`,
   }),
-  email: Joi.string().pattern(emailRegexp).required().messages({
-    "string.pattern.base": `'email' should be a type of 'email'`,
-    "string.empty": `'email' cannot be an empty field`,
-    "any.required": `missing required 'email' field`,
+  drinkAlternate: Joi.string().required().messages({
+    "string.base": `'description' should be a type of 'text'`,
+    "string.empty": `'description' cannot be an empty field`,
+    "any.required": `missing required 'description' field`,
   }),
-  phone: Joi.string().required().messages({
-    "string.empty": `'phone' cannot be an empty field`,
-    "any.required": `missing required 'phone' field`,
+  category: Joi.array()
+    .items(Joi.string().valid(...categoryList))
+    .unique()
+    .required()
+    .messages({
+      "array.empty": `'category' cannot be an empty array`,
+      "any.required": `missing required 'category' field`,
+    }),
+  glass: Joi.array()
+    .items(Joi.string().valid(...glassList))
+    .unique()
+    .required()
+    .messages({
+      "array.empty": `'glass' cannot be an empty array`,
+      "any.required": `missing required 'glass' field`,
+    }),
+  instructions: Joi.string().required().messages({
+    "string.empty": `'instructions' cannot be an empty field`,
+    "any.required": `missing required 'instructions' field`,
   }),
-  favorite: Joi.boolean(),
+  drinkThumb: Joi.string().required().messages({
+    "string.empty": `'drinkThumb' cannot be an empty field`,
+    "any.required": `missing required 'drinkThumb' field`,
+  }),
+  ingredients: Joi.array().items(Joi.string()).unique().required().messages({
+    "array.empty": `'ingredients' cannot be an empty array`,
+    "any.required": `missing required 'ingredients'`,
+  }),
 });
 
 export default { recipeAddSchema };
