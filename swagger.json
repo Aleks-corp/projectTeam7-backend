@@ -1,0 +1,391 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "2.0.2",
+    "title": "Swagger test",
+    "description": "Showing off swagger-ui-express",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "servers": [
+    { "url": "http://localhost:3000" },
+    { "url": "https://projectteam7-backend.onrender.com/" }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authorization endpoints"
+    },
+    {
+      "name": "Recipes",
+      "description": "Recipes (category,glass,ingredient lists and get-main,get-by-id,search) endpoints"
+    },
+    {
+      "name": "Own-recipes",
+      "description": "Get/Add/Remove own recipes endpoints"
+    },
+    {
+      "name": "Favorites-recipes",
+      "description": "Get/Add/Remove favorites recipes endpoints"
+    }
+  ],
+  "paths": {
+    "/auth/signup": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User registration",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Registration's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (empty body)",
+            "content": {}
+          },
+          "409": {
+            "description": "Email in use",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/auth/signin": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User logining",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Logining's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginingResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (empty body)",
+            "content": {}
+          },
+          "401": {
+            "description": "Email or password is wrong",
+            "content": {}
+          },
+          "409": {
+            "description": "Email in use",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/auth/current": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Get current user",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/auth/signout": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "User logout",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogoutResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/recipes/category": {
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "category list"
+      }
+    },
+    "/recipes/glass": {
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "glass list"
+      }
+    },
+    "/recipes/ingredients": {
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "ingredients list"
+      }
+    },
+    "/recipes/": {
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "Popular-category recipies for home"
+      }
+    },
+    "/recipes/:id": {
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "one recipe by id"
+      }
+    },
+    "/recipes/search": {
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "Search recipes by inputName, category, ingredient"
+      }
+    },
+    "/own": {
+      "get": {
+        "tags": ["Own-recipes"],
+        "summary": "Get my recipes"
+      },
+      "post": {
+        "tags": ["Own-recipes"],
+        "summary": "Add new recipe"
+      }
+    },
+    "/own/:id": {
+      "delete": {
+        "tags": ["Own-recipes"],
+        "summary": "Delete my recipe"
+      }
+    },
+
+    "/favorite": {
+      "get": {
+        "tags": ["Favorites-recipes"],
+        "summary": "Get my recipes"
+      },
+      "post": {
+        "tags": ["Favorites-recipes"],
+        "summary": "Add new recipe"
+      }
+    },
+    "/favorite/:id": {
+      "delete": {
+        "tags": ["Favorites-recipes"],
+        "summary": "Delete my recipe"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RegistrationRequest": {
+        "type": "object",
+        "required": ["name", "email", "password"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "format": "text"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          }
+        }
+      },
+      "RegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Token",
+            "format": "jwttoken"
+          },
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "format": "text"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "User's avatar",
+            "example": "http://localhost:3000/avatar.jpg"
+          }
+        },
+        "example": {
+          "token": "TOKEN",
+          "user": {
+            "name": "Name",
+            "email": "1@gmail.com",
+            "avatarURL": "PATH"
+          }
+        }
+      },
+      "LoginingRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          }
+        }
+      },
+      "LoginingResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Token",
+            "format": "jwttoken"
+          },
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "format": "text"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "User's avatar",
+            "example": "http://localhost:3000/avatar.jpg"
+          }
+        },
+        "example": {
+          "token": "TOKEN",
+          "user": {
+            "name": "Name",
+            "email": "1@gmail.com",
+            "avatarURL": "PATH"
+          }
+        }
+      },
+      "CurrentResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "format": "text"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "User's avatar",
+            "example": "http://localhost:3000/avatar.jpg"
+          }
+        },
+        "example": {
+          "token": "TOKEN",
+          "user": {
+            "name": "Name",
+            "email": "1@gmail.com",
+            "avatarURL": "PATH"
+          }
+        }
+      },
+      "LogoutResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "User successful logout"
+          }
+        },
+        "example": {
+          "message": "User successful logout"
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
