@@ -26,7 +26,7 @@ const recipeSchema = new Schema(
     category: {
       type: String,
       enum: categoryList,
-      required: [true, "Set title for recipe"],
+      required: [true, "Set category for recipe"],
     },
 
     IBA: {
@@ -56,7 +56,7 @@ const recipeSchema = new Schema(
     ingredients: {
       type: [ingredientSchema],
       ref: "ingredient",
-      required: [true, "Set title for recipe"],
+      required: [true, "Set ingridients for recipe"],
     },
 
     owner: {

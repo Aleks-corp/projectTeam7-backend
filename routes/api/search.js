@@ -1,7 +1,11 @@
-const express = require("express");
-const router = express.Router();
-const controller = require("../../controller/searchCocktailsController");
+import express from "express";
+import { authenticateToken } from "../../middlewares/index.js";
+import { searchCocktailsController } from "../../controllers/index.js";
 
-router.get("/", controller.getByName);
+const searchRouter = express.Router();
 
-module.exports = router;
+searchRouter.use(authenticateToken);
+
+searchRouter.get("/", searchCocktailsController.getByName);
+
+export default searchRouter;

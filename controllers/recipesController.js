@@ -33,10 +33,6 @@ const getRecipeById = async (req, res) => {
   res.json(recipe);
 };
 
-const searchRecipes = async (req, res) => {
-  res.status(201).json({ message: "array of recipes" });
-};
-
 export default {
   getCategoryList: ctrlWrapper(getCategoryList),
   getGlassList: ctrlWrapper(getGlassList),
@@ -44,5 +40,4 @@ export default {
 
   getRecipesForMain: ctrlWrapper(getRecipesForMain),
   getRecipeById: ctrlWrapper(getRecipeById),
-  searchRecipes: ctrlWrapper(searchRecipes),
 };

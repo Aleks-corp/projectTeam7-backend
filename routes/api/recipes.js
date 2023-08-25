@@ -5,7 +5,6 @@ import { recipesController } from "../../controllers/index.js";
 const {
   getRecipesForMain,
   getRecipeById,
-  searchRecipes,
   getCategoryList,
   getGlassList,
   getIngredientsList,
@@ -21,6 +20,5 @@ recipesRouter.get("/ingredients", getIngredientsList);
 
 recipesRouter.get("/", getRecipesForMain);
 recipesRouter.get("/:id", isValidId, getRecipeById);
-recipesRouter.get("/search", searchRecipes);
 
 export default recipesRouter;
