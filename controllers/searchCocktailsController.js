@@ -1,10 +1,10 @@
-const Recipe = require("../models/search");
-const { Wrapper } = require("../helpers");
+import { ctrlWrapper } from "../decorators/index.js";
+import Recipe from "../models/recipe.js";
 
 const getByName = async (req, res) => {
-  const { name, ingredient, category, page = 1, perPage = 9 } = req.query;
+  const { name, ingredient, category, page = 1, limit = 9 } = req.query;
 
-  const skipAmount = (parseInt(page) - 1) * parseInt(perPage);
+  const skipAmount = (parseInt(page) - 1) * parseInt(limit);
 
   try {
     const query = {};
@@ -24,11 +24,11 @@ const getByName = async (req, res) => {
     const totalCocktailsCount = await Recipe.countDocuments(query).exec();
     const matchingCocktails = await Recipe.find(query)
       .skip(skipAmount)
-      .limit(parseInt(perPage));
+      .limit(parseInt(limit));
 
     res.json({
       page: parseInt(page),
-      perPage: parseInt(perPage),
+      perPage: parseInt(limit),
       totalCocktails: totalCocktailsCount,
       cocktails: matchingCocktails,
     });
@@ -37,6 +37,6 @@ const getByName = async (req, res) => {
   }
 };
 
-module.exports = {
-  getByName: Wrapper(getByName),
+export default {
+  getByName: ctrlWrapper(getByName),
 };

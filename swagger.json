@@ -25,6 +25,10 @@
       "description": "Recipes (category,glass,ingredient lists and get-main,get-by-id,search) endpoints"
     },
     {
+      "name": "Search",
+      "description": "Search recipes by name, category and ingredient endpoints"
+    },
+    {
       "name": "Own-recipes",
       "description": "Get/Add/Remove own recipes endpoints"
     },
@@ -43,7 +47,6 @@
         "tags": ["Auth"],
         "summary": "User registration",
         "parameters": [],
-        "security": [{ "Bearer": [] }],
         "requestBody": {
           "description": "Registration's object",
           "required": true,
@@ -82,7 +85,6 @@
         "tags": ["Auth"],
         "summary": "User logining",
         "parameters": [],
-        "security": [{ "Bearer": [] }],
         "requestBody": {
           "description": "Logining's object",
           "required": true,
@@ -358,10 +360,184 @@
         }
       }
     },
-    "/recipes/search": {
+    "/search": {
       "get": {
-        "tags": ["Recipes"],
-        "summary": "Search recipes by inputName, category, ingredient"
+        "tags": ["Search"],
+        "summary": "Search recipes by input, category and ingredient",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "schema": {
+              "type": "string",
+              "description": "name of cocktail"
+            }
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Ordinary Drink",
+                "Cocktail",
+                "Shake",
+                "Other/Unknown",
+                "Cocoa",
+                "Shot",
+                "Coffee/Tea",
+                "Homemade Liqueur",
+                "Punch/Party Drink",
+                "Beer",
+                "Soft Drink"
+              ],
+              "description": "Category of cocktail"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ingredient",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Light rum",
+                "Dry Vermouth",
+                "Bourbon",
+                "Dark rum",
+                "Sugar",
+                "Southern Comfort",
+                "Tequila",
+                "Añejo rum",
+                "Sherry",
+                "Yoghurt",
+                "Kiwi",
+                "Egg",
+                "Irish cream",
+                "Chocolate liqueur",
+                "Rum",
+                "Ouzo",
+                "Sloe gin",
+                "Coffee",
+                "Creme de Cassis",
+                "Lemon juice",
+                "Chocolate",
+                "Midori melon liqueur",
+                "Peppermint schnapps",
+                "Vodka",
+                "Milk",
+                "Espresso",
+                "Applejack",
+                "Apple brandy",
+                "Port",
+                "Cognac",
+                "Pineapple juice",
+                "Champagne",
+                "Bitters",
+                "Coffee brandy",
+                "Mango",
+                "Cocoa powder",
+                "Sweet Vermouth",
+                "Triple sec",
+                "Blended whiskey",
+                "Lime",
+                "Angelica root",
+                "Ale",
+                "Apricot brandy",
+                "Brandy",
+                "Grenadine",
+                "Ricard",
+                "Sugar syrup",
+                "Berries",
+                "Cranberry juice",
+                "Peach nectar",
+                "Cider",
+                "Sprite",
+                "Orange bitters",
+                "Lemon vodka",
+                "Coffee liqueur",
+                "Carbonated water",
+                "Kahlua",
+                "Apple juice",
+                "Cantaloupe",
+                "Spiced rum",
+                "Water",
+                "Lemon",
+                "Pisco",
+                "7-Up",
+                "Tomato juice",
+                "Heavy cream",
+                "Apple cider",
+                "Everclear",
+                "Grape juice",
+                "Firewater",
+                "Whiskey",
+                "Scotch",
+                "Gin",
+                "Grapes",
+                "Strawberry schnapps",
+                "Cherry brandy",
+                "Red wine",
+                "Strawberries",
+                "Chocolate syrup",
+                "Galliano",
+                "Orange",
+                "Johnnie Walker",
+                "Egg yolk",
+                "Sambuca",
+                "Blackberry brandy",
+                "Amaretto",
+                "Dubonnet Rouge",
+                "Creme de Cacao",
+                "Lager",
+                "Absolut Citron",
+                "demerara Sugar",
+                "Grapefruit juice",
+                "Lemonade",
+                "Tea",
+                "Watermelon",
+                "Lime juice",
+                "Irish whiskey",
+                "Ginger",
+                "Peach Vodka",
+                "Cranberries"
+              ],
+              "description": "Ingredient of cocktail"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "description": "Number of page"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "description": "How much recipes per page"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
       }
     },
     "/own": {
@@ -625,6 +801,18 @@
         }
       },
       "LogoutResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "User successful logout"
+          }
+        },
+        "example": {
+          "message": "User successful logout"
+        }
+      },
+      "SearchResponse": {
         "type": "object",
         "properties": {
           "message": {
