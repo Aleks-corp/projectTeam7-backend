@@ -6,6 +6,7 @@ import authRouter from "./routes/api/auth.js";
 import ownRecipesRouter from "./routes/api/own.js";
 import favoriteRecipesRouter from "./routes/api/favorite.js";
 import subscribeRouter from "./routes/api/subscribe.js";
+import searchRouter from "./routes/api/search.js";
 
 import swaggerUi from "swagger-ui-express";
 import { readFileSync } from "fs";
@@ -25,6 +26,7 @@ app.use("/recipes", recipesRouter);
 app.use("/own", ownRecipesRouter);
 app.use("/favorite", favoriteRecipesRouter);
 app.use("/subscribe", subscribeRouter);
+app.use("/search", searchRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
