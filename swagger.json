@@ -31,6 +31,10 @@
     {
       "name": "Favorites-recipes",
       "description": "Get/Add/Remove favorites recipes endpoints"
+    },
+    {
+      "name": "Subscription",
+      "description": "Add subscription endpoints"
     }
   ],
   "paths": {
@@ -140,6 +144,41 @@
         }
       }
     },
+    "/auth/update": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Update user's name or avatar",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Update object",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
     "/auth/signout": {
       "get": {
         "tags": ["Auth"],
@@ -167,31 +206,156 @@
     "/recipes/category": {
       "get": {
         "tags": ["Recipes"],
-        "summary": "category list"
+        "summary": "category list",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": ["Ordinary Drink", "Cocktail", "Shake", "Cocoa"]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
       }
     },
     "/recipes/glass": {
       "get": {
         "tags": ["Recipes"],
-        "summary": "glass list"
+        "summary": "glass list",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": [
+                    "Highball glass",
+                    "Cocktail glass",
+                    "Old-fashioned glass",
+                    "Whiskey Glass"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
       }
     },
     "/recipes/ingredients": {
       "get": {
         "tags": ["Recipes"],
-        "summary": "ingredients list"
+        "summary": "ingredients list",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": ["Light rum", "Applejack", "Gin", "Dark rum"]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
       }
     },
-    "/recipes/": {
+    "/recipes": {
       "get": {
         "tags": ["Recipes"],
         "summary": "Popular-category recipies for home"
       }
     },
-    "/recipes/:id": {
+    "/recipes/{id}": {
       "get": {
         "tags": ["Recipes"],
-        "summary": "one recipe by id"
+        "summary": "one recipe by id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "required": true,
+              "format": "ObjectId"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "User's name",
+                      "format": "text"
+                    },
+                    "email": {
+                      "type": "string",
+                      "description": "User's email",
+                      "format": "email"
+                    },
+                    "avatarURL": {
+                      "type": "string",
+                      "description": "User's avatar",
+                      "format": "uri",
+                      "example": "http://localhost:3000/avatar.jpg"
+                    }
+                  },
+                  "example": {
+                    "token": "TOKEN",
+                    "user": {
+                      "name": "Name",
+                      "email": "1@gmail.com",
+                      "avatarURL": "PATH"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
       }
     },
     "/recipes/search": {
@@ -231,6 +395,58 @@
       "delete": {
         "tags": ["Favorites-recipes"],
         "summary": "Delete my recipe"
+      }
+    },
+    "/subscribe": {
+      "post": {
+        "tags": ["Subscription"],
+        "summary": "Send mail to start subscription on news",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Subscribe object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "subscription email",
+                    "format": "email"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "subscription successfull"
+                    }
+                  },
+                  "example": {
+                    "message": "subscription successfull"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (empty body or not valid email)",
+            "content": {}
+          }
+        }
       }
     }
   },
@@ -365,6 +581,47 @@
             "email": "1@gmail.com",
             "avatarURL": "PATH"
           }
+        }
+      },
+      "UpdateRequest": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "example": "name"
+          },
+          "fileName": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      },
+      "UpdateResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "format": "text",
+            "example": "name"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "User's avatar",
+            "example": "http://localhost:3000/avatar.jpg"
+          }
+        },
+        "example": {
+          "name": "Name",
+          "email": "1@gmail.com",
+          "avatarURL": "PATH"
         }
       },
       "LogoutResponse": {

@@ -5,19 +5,19 @@ import Ingredient from "../models/ingredient.js";
 import { categoryList, glassList } from "../constants/constants.js";
 
 const getCategoryList = async (req, res) => {
-  res.json({ categoryList });
+  res.json(categoryList);
 };
 
 const getGlassList = async (req, res) => {
-  res.json({ glassList });
+  res.json(glassList);
 };
 const getIngredientsList = async (req, res) => {
   const ingredientObjList = await Ingredient.find();
   const ingredientList = [];
-  ingredientObjList.forEach((element) => {
+  ingredientObjList.forEach(element => {
     ingredientList.push(element.title);
   });
-  res.json({ ingredientList });
+  res.json(ingredientList);
 };
 
 const getRecipesForMain = async (req, res) => {
