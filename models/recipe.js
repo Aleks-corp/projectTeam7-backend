@@ -66,8 +66,8 @@ const recipeSchema = new Schema(
     },
 
     favorites: {
-      type: String,
-      required: [true, "Set title for recipe"],
+      type: [Schema.Types.ObjectId],
+      ref: "user",
     },
   },
   { versionKey: false, timestamps: true }
