@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
 
 import recipesRouter from "./routes/api/recipes.js";
 import authRouter from "./routes/api/auth.js";
@@ -16,7 +17,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.static(path.resolve("public")));
 
 app.use("/api-docs", swaggerUi.serve);
 app.get("/api-docs", swaggerUi.setup(swaggerDocument));

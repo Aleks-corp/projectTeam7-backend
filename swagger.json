@@ -149,7 +149,7 @@
     "/auth/update": {
       "post": {
         "tags": ["Auth"],
-        "summary": "Update user's name or avatar",
+        "summary": "Update user's name or avatar (DON'T WORK)",
         "parameters": [],
         "security": [{ "Bearer": [] }],
         "requestBody": {
@@ -297,7 +297,7 @@
     "/recipes": {
       "get": {
         "tags": ["Recipes"],
-        "summary": "Popular-category recipies for home"
+        "summary": "Popular-category recipies for home (DON'T WORK)"
       }
     },
     "/recipes/{id}": {
@@ -543,40 +543,110 @@
     "/own": {
       "get": {
         "tags": ["Own-recipes"],
-        "summary": "Get my recipes"
+        "summary": "Get my recipes",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "description": "Number of page"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "description": "How much recipes per page"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
       },
       "post": {
         "tags": ["Own-recipes"],
-        "summary": "Add new recipe"
+        "summary": "Add new recipe (DON'T WORK)"
       }
     },
     "/own/:id": {
       "delete": {
         "tags": ["Own-recipes"],
-        "summary": "Delete my recipe"
+        "summary": "Delete my recipe (DON'T WORK)"
       }
     },
 
     "/favorite": {
       "get": {
         "tags": ["Favorites-recipes"],
-        "summary": "Get my recipes"
+        "summary": "Get my recipes",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "description": "Number of page"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "description": "How much recipes per page"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
       },
       "post": {
         "tags": ["Favorites-recipes"],
-        "summary": "Add new recipe"
+        "summary": "Add new recipe (DON'T WORK)"
       }
     },
     "/favorite/:id": {
       "delete": {
         "tags": ["Favorites-recipes"],
-        "summary": "Delete my recipe"
+        "summary": "Delete my recipe (DON'T WORK)"
       }
     },
     "/subscribe": {
       "post": {
         "tags": ["Subscription"],
-        "summary": "Send mail to start subscription on news",
+        "summary": "Send mail to start subscription on news (DON'T WORK)",
         "parameters": [],
         "security": [{ "Bearer": [] }],
         "requestBody": {
@@ -657,6 +727,11 @@
             "description": "Token",
             "format": "jwttoken"
           },
+          "id": {
+            "type": "string",
+            "description": "User's id",
+            "format": "string"
+          },
           "name": {
             "type": "string",
             "description": "User's name",
@@ -676,6 +751,7 @@
         "example": {
           "token": "TOKEN",
           "user": {
+            "id": "ID",
             "name": "Name",
             "email": "1@gmail.com",
             "avatarURL": "PATH"
@@ -706,6 +782,11 @@
             "description": "Token",
             "format": "jwttoken"
           },
+          "id": {
+            "type": "string",
+            "description": "User's id",
+            "format": "string"
+          },
           "name": {
             "type": "string",
             "description": "User's name",
@@ -725,6 +806,7 @@
         "example": {
           "token": "TOKEN",
           "user": {
+            "id": "ID",
             "name": "Name",
             "email": "1@gmail.com",
             "avatarURL": "PATH"
@@ -734,6 +816,11 @@
       "CurrentResponse": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "User's id",
+            "format": "string"
+          },
           "name": {
             "type": "string",
             "description": "User's name",
@@ -751,12 +838,10 @@
           }
         },
         "example": {
-          "token": "TOKEN",
-          "user": {
-            "name": "Name",
-            "email": "1@gmail.com",
-            "avatarURL": "PATH"
-          }
+          "id": "ID",
+          "name": "Name",
+          "email": "1@gmail.com",
+          "avatarURL": "PATH"
         }
       },
       "UpdateRequest": {

@@ -29,6 +29,7 @@ const signUp = async (req, res) => {
   res.status(201).json({
     token,
     user: {
+      id: newUser._id,
       name: newUser.name,
       email: newUser.email,
       avatarURL: newUser.avatarURL,
@@ -50,6 +51,7 @@ const signIn = async (req, res) => {
   res.json({
     token,
     user: {
+      id: user._id,
       name: user.name,
       email: user.email,
       avatarURL: user.avatarURL,
@@ -64,8 +66,8 @@ const signOut = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  const { name, email, avatarURL } = req.user;
-  res.json({ name, email, avatarURL });
+  const { _id, name, email, avatarURL } = req.user;
+  res.json({ id: _id, name, email, avatarURL });
 };
 
 const updateUser = async (req, res) => {
