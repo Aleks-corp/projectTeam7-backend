@@ -7,13 +7,12 @@ import { ctrlWrapper } from "../decorators/index.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 
-import path from "path";
-
 const { JWT_SECRET } = process.env;
 
 const signUp = async (req, res) => {
   const { email, password } = req.body;
-  const url = path.resolve("public", "avatars", "temp-avatar-user.jpg");
+  const avatarURL =
+    "https://res.cloudinary.com/deeooeyeg/image/upload/v1693065810/Media/temp-avatar-user_hbvjcp.png";
   const user = await User.findOne({ email });
   if (user) {
     throw ApiError(409, "Email in use");
@@ -22,7 +21,7 @@ const signUp = async (req, res) => {
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
-    avatarURL: url,
+    avatarURL,
   });
   const token = jwt.sign({ id: newUser._id }, JWT_SECRET, { expiresIn: "23h" });
   await User.findByIdAndUpdate(newUser._id, { token });
