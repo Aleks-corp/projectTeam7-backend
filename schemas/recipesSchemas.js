@@ -12,17 +12,14 @@ const recipeAddSchema = Joi.object({
     "string.empty": `'description' cannot be an empty field`,
     "any.required": `missing required 'description' field`,
   }),
-  category: Joi.array()
-    .items(Joi.string().valid(...categoryList))
-    .unique()
+  category: Joi.string()
+    .valid(...categoryList)
     .required()
     .messages({
       "array.empty": `'category' cannot be an empty array`,
       "any.required": `missing required 'category' field`,
     }),
-  glass: Joi.array()
-    .items(Joi.string().valid(...glassList))
-    .unique()
+  glass: Joi.string().valid(...glassList)
     .required()
     .messages({
       "array.empty": `'glass' cannot be an empty array`,
@@ -32,7 +29,7 @@ const recipeAddSchema = Joi.object({
     "string.empty": `'instructions' cannot be an empty field`,
     "any.required": `missing required 'instructions' field`,
   }),
-  drinkThumb: Joi.string().required().messages({
+  drinkThumb: Joi.string().messages({
     "string.empty": `'drinkThumb' cannot be an empty field`,
     "any.required": `missing required 'drinkThumb' field`,
   }),

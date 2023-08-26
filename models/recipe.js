@@ -4,6 +4,10 @@ import { handleUpdateValidator, handlerSaveError } from "./hooks.js";
 import { glassList, categoryList } from "../constants/constants.js";
 import { ingredientSchema } from "./ingredient.js";
 
+const favoritesSchema = new Schema({
+  type: Schema.Types.ObjectId,
+});
+
 const recipeSchema = new Schema(
   {
     drink: {
@@ -56,7 +60,7 @@ const recipeSchema = new Schema(
     ingredients: {
       type: [ingredientSchema],
       ref: "ingredient",
-      required: [true, "Set title for recipe"],
+      required: [true, "Set at least one ingridient"],
     },
 
     owner: {
@@ -66,8 +70,8 @@ const recipeSchema = new Schema(
     },
 
     favorites: {
-      type: String,
-      required: [true, "Set title for recipe"],
+      type: [favoritesSchema],
+      required: true,
     },
   },
   { versionKey: false, timestamps: true }
