@@ -297,7 +297,34 @@
     "/recipes": {
       "get": {
         "tags": ["Recipes"],
-        "summary": "Popular-category recipies for home (DON'T WORK)"
+        "summary": "Popular-category recipies for home",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "description": "How much recipes per category"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MainResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
       }
     },
     "/recipes/{id}": {
@@ -957,6 +984,90 @@
             }
           ]
         }
+      },
+      "MainResponse": {
+        "type": "object",
+        "properties": {
+          "page": { "type": "string" },
+          "perPage": { "type": "string" },
+          "totalCocktails": { "type": "string" },
+          "cocktails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "_id": { "type": "string" },
+                "favorites": { "type": "array", "items": { "type": "string" } },
+                "drink": { "type": "string" },
+                "drinkAlternate": { "type": "string" },
+                "category": { "type": "string" },
+                "alcoholic": { "type": "string" },
+                "glass": { "type": "string" },
+                "instructions": { "type": "string" },
+                "drinkThumb": { "type": "string" },
+                "ingredients": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": { "type": "string" },
+                      "title": { "type": "string" },
+                      "measure": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "example": [
+          {
+            "_id": "Ordinary Drink",
+            "recipes": [
+              {
+                "favorites": ["id", "id"],
+                "_id": "id",
+                "drink": "Name Cocktail",
+                "drinkAlternate": "About",
+                "category": "Ordinary Drink",
+                "alcoholic": "Alcoholic",
+                "glass": "Wine glass",
+                "instructions": "Instructions",
+                "drinkThumb": "image.jpg",
+                "ingredients": [
+                  {
+                    "_id": "id",
+                    "title": "name ingredient",
+                    "measure": "1 shot"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "_id": "Cocktail",
+            "recipes": [
+              {
+                "favorites": ["id", "id"],
+                "_id": "id",
+                "drink": "Name Cocktail",
+                "drinkAlternate": "About",
+                "category": "Ordinary Drink",
+                "alcoholic": "Alcoholic",
+                "glass": "Wine glass",
+                "instructions": "Instructions",
+                "drinkThumb": "image.jpg",
+                "ingredients": [
+                  {
+                    "_id": "id",
+                    "title": "name ingredient",
+                    "measure": "1 shot"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     },
     "securitySchemes": {

@@ -21,7 +21,50 @@ const getIngredientsList = async (req, res) => {
 };
 
 const getRecipesForMain = async (req, res) => {
-  res.json({ message: "MainPage" });
+  const { limit = 3 } = req.query;
+  const recipes = await Recipe.aggregate([
+    {
+      $group: {
+        _id: "$favorites",
+        recipeFavCount: { $sum: 1 },
+        recipes: { $push: "$$ROOT" },
+      },
+    },
+    {
+      $sort: { recipeFavCount: 1 },
+    },
+    {
+      $unwind: "$recipes",
+    },
+    {
+      $replaceRoot: { newRoot: "$recipes" },
+    },
+    {
+      $group: {
+        _id: "$category",
+        recipeCount: { $sum: 1 },
+        recipes: { $push: "$$ROOT" },
+      },
+    },
+    {
+      $sort: { recipeCount: -1 },
+    },
+    {
+      $limit: 4,
+    },
+    {
+      $project: {
+        recipes: {
+          $slice: [
+            "$recipes",
+            typeof limit === "number" ? limit : Number(limit),
+          ],
+        },
+      },
+    },
+  ]);
+
+  res.json(recipes);
 };
 
 const getRecipeById = async (req, res) => {
