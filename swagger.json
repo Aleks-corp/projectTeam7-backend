@@ -25,12 +25,20 @@
       "description": "Recipes (category,glass,ingredient lists and get-main,get-by-id,search) endpoints"
     },
     {
+      "name": "Search",
+      "description": "Search recipes by name, category and ingredient endpoints"
+    },
+    {
       "name": "Own-recipes",
       "description": "Get/Add/Remove own recipes endpoints"
     },
     {
       "name": "Favorites-recipes",
       "description": "Get/Add/Remove favorites recipes endpoints"
+    },
+    {
+      "name": "Subscription",
+      "description": "Add subscription endpoints"
     }
   ],
   "paths": {
@@ -39,7 +47,6 @@
         "tags": ["Auth"],
         "summary": "User registration",
         "parameters": [],
-        "security": [{ "Bearer": [] }],
         "requestBody": {
           "description": "Registration's object",
           "required": true,
@@ -78,7 +85,6 @@
         "tags": ["Auth"],
         "summary": "User logining",
         "parameters": [],
-        "security": [{ "Bearer": [] }],
         "requestBody": {
           "description": "Logining's object",
           "required": true,
@@ -140,6 +146,41 @@
         }
       }
     },
+    "/auth/update": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Update user's name or avatar (DON'T WORK)",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Update object",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
     "/auth/signout": {
       "get": {
         "tags": ["Auth"],
@@ -167,70 +208,518 @@
     "/recipes/category": {
       "get": {
         "tags": ["Recipes"],
-        "summary": "category list"
+        "summary": "category list",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": ["Ordinary Drink", "Cocktail", "Shake", "Cocoa"]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
       }
     },
     "/recipes/glass": {
       "get": {
         "tags": ["Recipes"],
-        "summary": "glass list"
+        "summary": "glass list",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": [
+                    "Highball glass",
+                    "Cocktail glass",
+                    "Old-fashioned glass",
+                    "Whiskey Glass"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
       }
     },
     "/recipes/ingredients": {
       "get": {
         "tags": ["Recipes"],
-        "summary": "ingredients list"
+        "summary": "ingredients list",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": ["Light rum", "Applejack", "Gin", "Dark rum"]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
       }
     },
-    "/recipes/": {
+    "/recipes": {
       "get": {
         "tags": ["Recipes"],
-        "summary": "Popular-category recipies for home"
+        "summary": "Popular-category recipies for home",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "description": "How much recipes per category"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MainResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
       }
     },
-    "/recipes/:id": {
+    "/recipes/{id}": {
       "get": {
         "tags": ["Recipes"],
-        "summary": "one recipe by id"
+        "summary": "one recipe by id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "required": true,
+              "format": "ObjectId"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "User's name",
+                      "format": "text"
+                    },
+                    "email": {
+                      "type": "string",
+                      "description": "User's email",
+                      "format": "email"
+                    },
+                    "avatarURL": {
+                      "type": "string",
+                      "description": "User's avatar",
+                      "format": "uri",
+                      "example": "http://localhost:3000/avatar.jpg"
+                    }
+                  },
+                  "example": {
+                    "token": "TOKEN",
+                    "user": {
+                      "name": "Name",
+                      "email": "1@gmail.com",
+                      "avatarURL": "PATH"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
       }
     },
-    "/recipes/search": {
+    "/search": {
       "get": {
-        "tags": ["Recipes"],
-        "summary": "Search recipes by inputName, category, ingredient"
+        "tags": ["Search"],
+        "summary": "Search recipes by input, category and ingredient",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "schema": {
+              "type": "string",
+              "description": "name of cocktail"
+            }
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Ordinary Drink",
+                "Cocktail",
+                "Shake",
+                "Other/Unknown",
+                "Cocoa",
+                "Shot",
+                "Coffee/Tea",
+                "Homemade Liqueur",
+                "Punch/Party Drink",
+                "Beer",
+                "Soft Drink"
+              ],
+              "description": "Category of cocktail"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ingredient",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Light rum",
+                "Dry Vermouth",
+                "Bourbon",
+                "Dark rum",
+                "Sugar",
+                "Southern Comfort",
+                "Tequila",
+                "Añejo rum",
+                "Sherry",
+                "Yoghurt",
+                "Kiwi",
+                "Egg",
+                "Irish cream",
+                "Chocolate liqueur",
+                "Rum",
+                "Ouzo",
+                "Sloe gin",
+                "Coffee",
+                "Creme de Cassis",
+                "Lemon juice",
+                "Chocolate",
+                "Midori melon liqueur",
+                "Peppermint schnapps",
+                "Vodka",
+                "Milk",
+                "Espresso",
+                "Applejack",
+                "Apple brandy",
+                "Port",
+                "Cognac",
+                "Pineapple juice",
+                "Champagne",
+                "Bitters",
+                "Coffee brandy",
+                "Mango",
+                "Cocoa powder",
+                "Sweet Vermouth",
+                "Triple sec",
+                "Blended whiskey",
+                "Lime",
+                "Angelica root",
+                "Ale",
+                "Apricot brandy",
+                "Brandy",
+                "Grenadine",
+                "Ricard",
+                "Sugar syrup",
+                "Berries",
+                "Cranberry juice",
+                "Peach nectar",
+                "Cider",
+                "Sprite",
+                "Orange bitters",
+                "Lemon vodka",
+                "Coffee liqueur",
+                "Carbonated water",
+                "Kahlua",
+                "Apple juice",
+                "Cantaloupe",
+                "Spiced rum",
+                "Water",
+                "Lemon",
+                "Pisco",
+                "7-Up",
+                "Tomato juice",
+                "Heavy cream",
+                "Apple cider",
+                "Everclear",
+                "Grape juice",
+                "Firewater",
+                "Whiskey",
+                "Scotch",
+                "Gin",
+                "Grapes",
+                "Strawberry schnapps",
+                "Cherry brandy",
+                "Red wine",
+                "Strawberries",
+                "Chocolate syrup",
+                "Galliano",
+                "Orange",
+                "Johnnie Walker",
+                "Egg yolk",
+                "Sambuca",
+                "Blackberry brandy",
+                "Amaretto",
+                "Dubonnet Rouge",
+                "Creme de Cacao",
+                "Lager",
+                "Absolut Citron",
+                "demerara Sugar",
+                "Grapefruit juice",
+                "Lemonade",
+                "Tea",
+                "Watermelon",
+                "Lime juice",
+                "Irish whiskey",
+                "Ginger",
+                "Peach Vodka",
+                "Cranberries"
+              ],
+              "description": "Ingredient of cocktail"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "description": "Number of page"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "description": "How much recipes per page"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
       }
     },
     "/own": {
       "get": {
         "tags": ["Own-recipes"],
-        "summary": "Get my recipes"
+        "summary": "Get my recipes",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "description": "Number of page"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "description": "How much recipes per page"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
       },
       "post": {
         "tags": ["Own-recipes"],
-        "summary": "Add new recipe"
+        "summary": "Add new recipe (DON'T WORK)"
       }
     },
     "/own/:id": {
       "delete": {
         "tags": ["Own-recipes"],
-        "summary": "Delete my recipe"
+        "summary": "Delete my recipe (DON'T WORK)"
       }
     },
 
     "/favorite": {
       "get": {
         "tags": ["Favorites-recipes"],
-        "summary": "Get my recipes"
+        "summary": "Get my recipes",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "description": "Number of page"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "description": "How much recipes per page"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
       },
       "post": {
         "tags": ["Favorites-recipes"],
-        "summary": "Add new recipe"
+        "summary": "Add new recipe (DON'T WORK)"
       }
     },
     "/favorite/:id": {
       "delete": {
         "tags": ["Favorites-recipes"],
-        "summary": "Delete my recipe"
+        "summary": "Delete my recipe (DON'T WORK)"
+      }
+    },
+    "/subscribe": {
+      "post": {
+        "tags": ["Subscription"],
+        "summary": "Send mail to start subscription on news (DON'T WORK)",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Subscribe object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "subscription email",
+                    "format": "email"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "subscription successfull"
+                    }
+                  },
+                  "example": {
+                    "message": "subscription successfull"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (empty body or not valid email)",
+            "content": {}
+          }
+        }
       }
     }
   },
@@ -265,6 +754,11 @@
             "description": "Token",
             "format": "jwttoken"
           },
+          "id": {
+            "type": "string",
+            "description": "User's id",
+            "format": "string"
+          },
           "name": {
             "type": "string",
             "description": "User's name",
@@ -284,6 +778,7 @@
         "example": {
           "token": "TOKEN",
           "user": {
+            "id": "ID",
             "name": "Name",
             "email": "1@gmail.com",
             "avatarURL": "PATH"
@@ -314,6 +809,11 @@
             "description": "Token",
             "format": "jwttoken"
           },
+          "id": {
+            "type": "string",
+            "description": "User's id",
+            "format": "string"
+          },
           "name": {
             "type": "string",
             "description": "User's name",
@@ -333,6 +833,7 @@
         "example": {
           "token": "TOKEN",
           "user": {
+            "id": "ID",
             "name": "Name",
             "email": "1@gmail.com",
             "avatarURL": "PATH"
@@ -342,6 +843,11 @@
       "CurrentResponse": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "User's id",
+            "format": "string"
+          },
           "name": {
             "type": "string",
             "description": "User's name",
@@ -359,12 +865,51 @@
           }
         },
         "example": {
-          "token": "TOKEN",
-          "user": {
-            "name": "Name",
-            "email": "1@gmail.com",
-            "avatarURL": "PATH"
+          "id": "ID",
+          "name": "Name",
+          "email": "1@gmail.com",
+          "avatarURL": "PATH"
+        }
+      },
+      "UpdateRequest": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "example": "name"
+          },
+          "fileName": {
+            "type": "string",
+            "format": "binary"
           }
+        }
+      },
+      "UpdateResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "format": "text",
+            "example": "name"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "User's avatar",
+            "example": "http://localhost:3000/avatar.jpg"
+          }
+        },
+        "example": {
+          "name": "Name",
+          "email": "1@gmail.com",
+          "avatarURL": "PATH"
         }
       },
       "LogoutResponse": {
@@ -378,6 +923,151 @@
         "example": {
           "message": "User successful logout"
         }
+      },
+      "SearchResponse": {
+        "type": "object",
+        "properties": {
+          "page": { "type": "string" },
+          "perPage": { "type": "string" },
+          "totalCocktails": { "type": "string" },
+          "cocktails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "_id": { "type": "string" },
+                "favorites": { "type": "array", "items": { "type": "string" } },
+                "drink": { "type": "string" },
+                "drinkAlternate": { "type": "string" },
+                "category": { "type": "string" },
+                "alcoholic": { "type": "string" },
+                "glass": { "type": "string" },
+                "instructions": { "type": "string" },
+                "drinkThumb": { "type": "string" },
+                "ingredients": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": { "type": "string" },
+                      "title": { "type": "string" },
+                      "measure": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "page": 1,
+          "perPage": 1,
+          "totalCocktails": 1,
+          "cocktails": [
+            {
+              "favorites": ["id", "id"],
+              "_id": "id",
+              "drink": "Name Cocktail",
+              "drinkAlternate": "About",
+              "category": "Cocktail",
+              "alcoholic": "Alcoholic",
+              "glass": "Wine glass",
+              "instructions": "Instructions",
+              "drinkThumb": "image.jpg",
+              "ingredients": [
+                {
+                  "_id": "id",
+                  "title": "name ingredient",
+                  "measure": "1 shot"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "MainResponse": {
+        "type": "object",
+        "properties": {
+          "page": { "type": "string" },
+          "perPage": { "type": "string" },
+          "totalCocktails": { "type": "string" },
+          "cocktails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "_id": { "type": "string" },
+                "favorites": { "type": "array", "items": { "type": "string" } },
+                "drink": { "type": "string" },
+                "drinkAlternate": { "type": "string" },
+                "category": { "type": "string" },
+                "alcoholic": { "type": "string" },
+                "glass": { "type": "string" },
+                "instructions": { "type": "string" },
+                "drinkThumb": { "type": "string" },
+                "ingredients": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": { "type": "string" },
+                      "title": { "type": "string" },
+                      "measure": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "example": [
+          {
+            "_id": "Ordinary Drink",
+            "recipes": [
+              {
+                "favorites": ["id", "id"],
+                "_id": "id",
+                "drink": "Name Cocktail",
+                "drinkAlternate": "About",
+                "category": "Ordinary Drink",
+                "alcoholic": "Alcoholic",
+                "glass": "Wine glass",
+                "instructions": "Instructions",
+                "drinkThumb": "image.jpg",
+                "ingredients": [
+                  {
+                    "_id": "id",
+                    "title": "name ingredient",
+                    "measure": "1 shot"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "_id": "Cocktail",
+            "recipes": [
+              {
+                "favorites": ["id", "id"],
+                "_id": "id",
+                "drink": "Name Cocktail",
+                "drinkAlternate": "About",
+                "category": "Ordinary Drink",
+                "alcoholic": "Alcoholic",
+                "glass": "Wine glass",
+                "instructions": "Instructions",
+                "drinkThumb": "image.jpg",
+                "ingredients": [
+                  {
+                    "_id": "id",
+                    "title": "name ingredient",
+                    "measure": "1 shot"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     },
     "securitySchemes": {

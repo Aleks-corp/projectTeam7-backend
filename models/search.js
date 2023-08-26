@@ -4,10 +4,6 @@ import { handleUpdateValidator, handlerSaveError } from "./hooks.js";
 import { glassList, categoryList } from "../constants/constants.js";
 import { ingredientSchema } from "./ingredient.js";
 
-const favoritesSchema = new Schema({
-  type: Schema.Types.ObjectId,
-});
-
 const recipeSchema = new Schema(
   {
     drink: {
@@ -30,7 +26,7 @@ const recipeSchema = new Schema(
     category: {
       type: String,
       enum: categoryList,
-      required: [true, "Set category for recipe"],
+      required: [true, "Set title for recipe"],
     },
 
     IBA: {
@@ -60,9 +56,7 @@ const recipeSchema = new Schema(
     ingredients: {
       type: [ingredientSchema],
       ref: "ingredient",
-
-      required: [true, "Set at least one ingridient"],
-
+      required: [true, "Set title for recipe"],
     },
 
     owner: {
@@ -72,15 +66,12 @@ const recipeSchema = new Schema(
     },
 
     favorites: {
-
-      type: [favoritesSchema],
-      required: true,
-
+      type: [Schema.Types.ObjectId],
+      ref: "user",
     },
   },
   { versionKey: false, timestamps: true }
 );
-
 recipeSchema.post("save", handlerSaveError);
 
 recipeSchema.pre("findOneAndUpdate", handleUpdateValidator);

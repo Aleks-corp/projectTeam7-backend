@@ -18,7 +18,7 @@ authRouter.post("/signin", validateBody(userLoginSchema), signIn);
 authRouter.get("/signout", authenticateToken, signOut);
 authRouter.get("/current", authenticateToken, getCurrent);
 
-authRouter.patch(
+authRouter.post(
   "/update",
   authenticateToken,
   upload.single("avatar"),

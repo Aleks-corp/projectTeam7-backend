@@ -7,13 +7,12 @@ import { ctrlWrapper } from "../decorators/index.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 
-import path from "path";
-
 const { JWT_SECRET } = process.env;
 
 const signUp = async (req, res) => {
   const { email, password } = req.body;
-  const url = path.resolve("public", "avatars", "temp-avatar-user.jpg");
+  const avatarURL =
+    "https://res.cloudinary.com/deeooeyeg/image/upload/v1693065810/Media/temp-avatar-user_hbvjcp.png";
   const user = await User.findOne({ email });
   if (user) {
     throw ApiError(409, "Email in use");
@@ -22,13 +21,14 @@ const signUp = async (req, res) => {
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
-    avatarURL: url,
+    avatarURL,
   });
   const token = jwt.sign({ id: newUser._id }, JWT_SECRET, { expiresIn: "23h" });
   await User.findByIdAndUpdate(newUser._id, { token });
   res.status(201).json({
     token,
     user: {
+      id: newUser._id,
       name: newUser.name,
       email: newUser.email,
       avatarURL: newUser.avatarURL,
@@ -50,6 +50,7 @@ const signIn = async (req, res) => {
   res.json({
     token,
     user: {
+      id: user._id,
       name: user.name,
       email: user.email,
       avatarURL: user.avatarURL,
@@ -64,8 +65,8 @@ const signOut = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  const { name, email, avatarURL } = req.user;
-  res.json({ name, email, avatarURL });
+  const { _id, name, email, avatarURL } = req.user;
+  res.json({ id: _id, name, email, avatarURL });
 };
 
 const updateUser = async (req, res) => {
