@@ -725,18 +725,19 @@
         }
       }
     },
-    "/favorite/:id": {
+    "/favorite/{id}": {
       "delete": {
         "tags": ["Favorites-recipes"],
         "summary": "Delete my recipe",
         "security": [{ "Bearer": [] }],
         "parameters": [
           {
-            "in": "query",
+            "in": "path",
             "name": "id",
             "schema": {
               "type": "string",
-              "description": "Recipe ID"
+              "required": true,
+              "format": "ObjectId"
             }
           }
         ],
