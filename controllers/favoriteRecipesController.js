@@ -16,13 +16,42 @@ const getFavoriteRecipes = async (req, res) => {
 };
 
 const addFavoriteRecipe = async (req, res) => {
-  // отримали ID рецепту і додали ID user до масиву favorites
-  res.status(201).json({ message: "added to favorite" });
+  const { id } = req.body;
+  const { _id } = req.user;
+
+  const recipe = await Recipe.findById(id);
+  if (!recipe) {
+    throw ApiError(404);
+  }
+  if (recipe.favorites.includes(_id)) {
+    throw ApiError(400, "This recipe exist in favorites");
+  } else {
+    await Recipe.findByIdAndUpdate(
+      id,
+      { $push: { favorites: _id } },
+      { new: true }
+    );
+    res.status(201).json({ message: "added to favorite" });
+  }
 };
 
 const removeFavoriteRecipe = async (req, res) => {
-  // отримали ID рецепту і видалили ID user до масиву favorites
-  res.json({ message: "Recipe deleted" });
+  const { id } = req.params;
+  const { _id } = req.user;
+  const recipe = await Recipe.findById(id);
+  if (!recipe) {
+    throw ApiError(404);
+  }
+  if (recipe.favorites.includes(_id)) {
+    await Recipe.findByIdAndUpdate(
+      id,
+      { $pull: { favorites: _id } },
+      { new: true }
+    );
+    res.json({ message: "Recipe deleted from favorites" });
+  } else {
+    throw ApiError(400, "This recipe NOT exist in favorites");
+  }
 };
 
 export default {
