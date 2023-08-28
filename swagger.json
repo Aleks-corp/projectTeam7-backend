@@ -851,7 +851,7 @@
             "description": "User's name",
             "example": "name"
           },
-          "fileName": {
+          "avatarURL": {
             "type": "string",
             "format": "binary"
           }

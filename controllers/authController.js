@@ -1,9 +1,8 @@
-import cloudinary from "../helpers/cloudinary.js";
 import User from "../models/user.js";
 import bcrypt from "bcryptjs";
 import fs from "fs/promises";
 
-import { ApiError } from "../helpers/index.js";
+import { ApiError, cloudinary } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
 
 import jwt from "jsonwebtoken";

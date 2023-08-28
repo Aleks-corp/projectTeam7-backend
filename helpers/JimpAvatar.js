@@ -1,9 +1,9 @@
-import Jimp from 'jimp';
+import Jimp from "jimp";
 
-const JimpAvatar = async (avatarPath) => {
+const JimpAvatar = async Path => {
   try {
-    const avatar = await Jimp.read(avatarPath);
-    avatar.resize(250, 250).quality(60).write(avatarPath);
+    const avatar = await Jimp.read(Path);
+    avatar.resize(400, 400).quality(80).write(Path);
   } catch (err) {
     throw new Error(err);
   }
