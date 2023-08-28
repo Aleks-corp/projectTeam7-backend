@@ -24,20 +24,19 @@ const getRecipesForMain = async (req, res) => {
   const { limit = 3 } = req.query;
   const recipes = await Recipe.aggregate([
     {
-      $group: {
-        _id: "$favorites",
-        recipeFavCount: { $sum: 1 },
-        recipes: { $push: "$$ROOT" },
+      $addFields: {
+        favoritesCount: { $size: { $ifNull: ["$favorites", []] } },
       },
     },
     {
-      $sort: { recipeFavCount: 1 },
+      $sort: {
+        favoritesCount: -1,
+      },
     },
     {
-      $unwind: "$recipes",
-    },
-    {
-      $replaceRoot: { newRoot: "$recipes" },
+      $project: {
+        favoritesCount: 0,
+      },
     },
     {
       $group: {

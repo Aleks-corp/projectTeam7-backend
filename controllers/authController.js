@@ -1,5 +1,7 @@
+import cloudinary from "../helpers/cloudinary.js";
 import User from "../models/user.js";
 import bcrypt from "bcryptjs";
+import fs from "fs/promises";
 
 import { ApiError } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
@@ -70,15 +72,29 @@ const getCurrent = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  // const { path: oldPath, filename } = req.file;
-  // const { _id, avatarURL: oldAvatarURL } = req.user;
-  // const { name } = req.body;
-  // await User.findByIdAndUpdate(
-  //   _id,
-  //   { avatarURL },
-  //   { new: true }
-  // );
-  res.json({ message: "avatar Updated" });
+  if (!req.file) throw ApiError(400);
+  const name = req.body.name;
+  const { _id } = req.user;
+  const { path } = req.file;
+
+  const result = await cloudinary.uploader.upload(path, {
+    folder: "project-seven/avatar",
+    width: 100,
+    height: 100,
+    crop: "fill",
+  });
+  const avatarURL = result.url;
+
+  await User.findOneAndUpdate(
+    _id,
+    { avatarURL, name },
+    {
+      new: true,
+    }
+  );
+
+  res.json({ avatarURL, name });
+  await fs.unlink(path);
 };
 
 export default {
