@@ -3,7 +3,7 @@ import { ctrlWrapper } from "../decorators/index.js";
 import Recipe from "../models/recipe.js";
 import Ingredient from "../models/ingredient.js";
 import fs from "fs/promises";
-import Jimp from "jimp";
+
 
 const getOwnRecipes = async (req, res) => {
   const { _id: owner } = req.user;
@@ -19,17 +19,16 @@ const getOwnRecipes = async (req, res) => {
 };
 
 const addOwnRecipe = async (req, res) => {
-  const { _id: owner } = req.user;
+  const {_id: owner} = req.user;
   const { path: tempPath } = req.file;
 
-  try {
-    const image = await Jimp.read(tempPath);
-    await image.resize(400, 400).write(tempPath);
-  } catch {
-    ApiError(400, 'File cannot be upload')
-  };
-
-  const { url: drinkThumb } = await cloudinary.uploader.upload(tempPath, { folder: "recipes" });
+  const {url:drinkThumb} = await cloudinary.uploader
+  .upload(tempPath, 
+    {folder: "recipes", 
+    width: 400,
+    height: 400,
+    crop: "fill"
+ });
 
   await fs.unlink(tempPath);
 
@@ -38,23 +37,24 @@ const addOwnRecipe = async (req, res) => {
   const storagedIngredients = await Ingredient.find(
     { _id: { $in: requestedIngredients } });
 
-  const ingredients = requestedIngredients.map(ingredient => {
-    const stIng = storagedIngredients.find(element => element._id == ingredient.id);
-    if (!stIng) {
-      ApiError(400, `Ingredient with id ${ingredient.id} is absent`)
-    }
-    const newIngr = {
-      title: stIng.title,
-      measure: ingredient.measure,
-      ingredientThumb: stIng.ingredientThumb
-    }
+    const ingredients = requestedIngredients.map(ingredient => {
+
+      const stIng = storagedIngredients.find(element => element._id == ingredient.id);
+      if (!stIng){
+        ApiError(400, `Ingredient with id ${ingredient.id} is absent`)
+      } 
+      const newIngr =  {
+        title: stIng.title,
+        measure:ingredient.measure,
+        ingredientThumb:stIng.ingredientThumb
+      }
     return newIngr
-  })
+    })
 
   const result = await Recipe.create({
-    ...req.body,
-    owner,
-    ingredients,
+    ...req.body, 
+    owner, 
+    ingredients,  
     drinkThumb
   })
   res.status(201).json(result)
@@ -64,12 +64,14 @@ const addOwnRecipe = async (req, res) => {
 
 const removeOwnRecipe = async (req, res) => {
 
-  const { _id: owner } = req.user;
-  const result = await Recipe.findOneAndRemove({ owner, _id: req.params.id })
+  const {_id: owner} = req.user;
+
+  const result = await Recipe.findOneAndRemove({owner, _id:req.params.id})
+
   if (!result) {
     throw ApiError(404);
   }
-  res.json({ id: result._id, message: "Recipe is deleted" });
+  res.json({ id:result._id, message: "Recipe is deleted" });
 };
 
 export default {
