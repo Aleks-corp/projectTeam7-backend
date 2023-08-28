@@ -12,8 +12,8 @@
   "consumes": ["application/json"],
   "produces": ["application/json"],
   "servers": [
-    { "url": "http://localhost:3000" },
-    { "url": "https://projectteam7-backend.onrender.com/" }
+    { "url": "https://projectteam7-backend.onrender.com/" },
+    { "url": "http://localhost:3000" }
   ],
   "tags": [
     {
@@ -70,7 +70,7 @@
             }
           },
           "400": {
-            "description": "Bad request (empty body)",
+            "description": "Bad request (empty body or some fields)",
             "content": {}
           },
           "409": {
@@ -108,7 +108,7 @@
             }
           },
           "400": {
-            "description": "Bad request (empty body)",
+            "description": "Bad request (empty body or some fields)",
             "content": {}
           },
           "401": {
@@ -149,7 +149,7 @@
     "/auth/update": {
       "post": {
         "tags": ["Auth"],
-        "summary": "Update user's name or avatar (DON'T WORK)",
+        "summary": "Update user's name or avatar",
         "parameters": [],
         "security": [{ "Bearer": [] }],
         "requestBody": {
@@ -250,7 +250,6 @@
                     "type": "string"
                   },
                   "example": [
-                    "Highball glass",
                     "Cocktail glass",
                     "Old-fashioned glass",
                     "Whiskey Glass"
@@ -349,33 +348,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string",
-                      "description": "User's name",
-                      "format": "text"
-                    },
-                    "email": {
-                      "type": "string",
-                      "description": "User's email",
-                      "format": "email"
-                    },
-                    "avatarURL": {
-                      "type": "string",
-                      "description": "User's avatar",
-                      "format": "uri",
-                      "example": "http://localhost:3000/avatar.jpg"
-                    }
-                  },
-                  "example": {
-                    "token": "TOKEN",
-                    "user": {
-                      "name": "Name",
-                      "email": "1@gmail.com",
-                      "avatarURL": "PATH"
-                    }
-                  }
+                  "$ref": "#/components/schemas/FindRecipeByIdResponse"
                 }
               }
             }
@@ -391,6 +364,7 @@
       "get": {
         "tags": ["Search"],
         "summary": "Search recipes by input, category and ingredient",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
             "in": "query",
@@ -404,131 +378,14 @@
             "in": "query",
             "name": "category",
             "schema": {
-              "type": "string",
-              "enum": [
-                "Ordinary Drink",
-                "Cocktail",
-                "Shake",
-                "Other/Unknown",
-                "Cocoa",
-                "Shot",
-                "Coffee/Tea",
-                "Homemade Liqueur",
-                "Punch/Party Drink",
-                "Beer",
-                "Soft Drink"
-              ],
-              "description": "Category of cocktail"
+              "$ref": "#/components/schemas/CaterogiesExample"
             }
           },
           {
             "in": "query",
             "name": "ingredient",
             "schema": {
-              "type": "string",
-              "enum": [
-                "Light rum",
-                "Dry Vermouth",
-                "Bourbon",
-                "Dark rum",
-                "Sugar",
-                "Southern Comfort",
-                "Tequila",
-                "Añejo rum",
-                "Sherry",
-                "Yoghurt",
-                "Kiwi",
-                "Egg",
-                "Irish cream",
-                "Chocolate liqueur",
-                "Rum",
-                "Ouzo",
-                "Sloe gin",
-                "Coffee",
-                "Creme de Cassis",
-                "Lemon juice",
-                "Chocolate",
-                "Midori melon liqueur",
-                "Peppermint schnapps",
-                "Vodka",
-                "Milk",
-                "Espresso",
-                "Applejack",
-                "Apple brandy",
-                "Port",
-                "Cognac",
-                "Pineapple juice",
-                "Champagne",
-                "Bitters",
-                "Coffee brandy",
-                "Mango",
-                "Cocoa powder",
-                "Sweet Vermouth",
-                "Triple sec",
-                "Blended whiskey",
-                "Lime",
-                "Angelica root",
-                "Ale",
-                "Apricot brandy",
-                "Brandy",
-                "Grenadine",
-                "Ricard",
-                "Sugar syrup",
-                "Berries",
-                "Cranberry juice",
-                "Peach nectar",
-                "Cider",
-                "Sprite",
-                "Orange bitters",
-                "Lemon vodka",
-                "Coffee liqueur",
-                "Carbonated water",
-                "Kahlua",
-                "Apple juice",
-                "Cantaloupe",
-                "Spiced rum",
-                "Water",
-                "Lemon",
-                "Pisco",
-                "7-Up",
-                "Tomato juice",
-                "Heavy cream",
-                "Apple cider",
-                "Everclear",
-                "Grape juice",
-                "Firewater",
-                "Whiskey",
-                "Scotch",
-                "Gin",
-                "Grapes",
-                "Strawberry schnapps",
-                "Cherry brandy",
-                "Red wine",
-                "Strawberries",
-                "Chocolate syrup",
-                "Galliano",
-                "Orange",
-                "Johnnie Walker",
-                "Egg yolk",
-                "Sambuca",
-                "Blackberry brandy",
-                "Amaretto",
-                "Dubonnet Rouge",
-                "Creme de Cacao",
-                "Lager",
-                "Absolut Citron",
-                "demerara Sugar",
-                "Grapefruit juice",
-                "Lemonade",
-                "Tea",
-                "Watermelon",
-                "Lime juice",
-                "Irish whiskey",
-                "Ginger",
-                "Peach Vodka",
-                "Cranberries"
-              ],
-              "description": "Ingredient of cocktail"
+              "$ref": "#/components/schemas/IngredientsExample"
             }
           },
           {
@@ -548,7 +405,6 @@
             }
           }
         ],
-        "security": [{ "Bearer": [] }],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -622,7 +478,7 @@
     "/favorite": {
       "get": {
         "tags": ["Favorites-recipes"],
-        "summary": "Get my recipes",
+        "summary": "Get favorites recipes",
         "security": [{ "Bearer": [] }],
         "parameters": [
           {
@@ -661,19 +517,134 @@
       },
       "post": {
         "tags": ["Favorites-recipes"],
-        "summary": "Add new recipe (DON'T WORK)"
+        "summary": "Add recipe to favorites",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "requestBody": {
+          "description": "Registration's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["id"],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "Recipe ID",
+                    "example": "ID"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string" },
+                    "message": {
+                      "type": "string",
+                      "description": "Message",
+                      "example": "Recipe added to favorites"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Message",
+                      "example": "This recipe is already in favorites"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
       }
     },
-    "/favorite/:id": {
+    "/favorite/{id}": {
       "delete": {
         "tags": ["Favorites-recipes"],
-        "summary": "Delete my recipe (DON'T WORK)"
+        "summary": "Delete recipe from favorites",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "required": true,
+              "format": "ObjectId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string" },
+                    "message": {
+                      "type": "string",
+                      "description": "Message",
+                      "example": "Recipe deleted from favorites"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not authorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Message",
+                      "example": "This recipe hasn't been added to favorites"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
       }
     },
     "/subscribe": {
       "post": {
         "tags": ["Subscription"],
-        "summary": "Send mail to start subscription on news (DON'T WORK)",
+        "summary": "Send mail to start subscription on news",
         "parameters": [],
         "security": [{ "Bearer": [] }],
         "requestBody": {
@@ -732,7 +703,7 @@
           "name": {
             "type": "string",
             "description": "User's name",
-            "format": "text"
+            "example": "user"
           },
           "email": {
             "type": "string",
@@ -752,7 +723,7 @@
           "token": {
             "type": "string",
             "description": "Token",
-            "format": "jwttoken"
+            "format": "JWT"
           },
           "id": {
             "type": "string",
@@ -776,7 +747,7 @@
           }
         },
         "example": {
-          "token": "TOKEN",
+          "token": "JWTTOKEN",
           "user": {
             "id": "ID",
             "name": "Name",
@@ -807,7 +778,7 @@
           "token": {
             "type": "string",
             "description": "Token",
-            "format": "jwttoken"
+            "format": "JWT"
           },
           "id": {
             "type": "string",
@@ -831,7 +802,7 @@
           }
         },
         "example": {
-          "token": "TOKEN",
+          "token": "JWTTOKEN",
           "user": {
             "id": "ID",
             "name": "Name",
@@ -936,7 +907,10 @@
               "type": "object",
               "properties": {
                 "_id": { "type": "string" },
-                "favorites": { "type": "array", "items": { "type": "string" } },
+                "favorites": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
                 "drink": { "type": "string" },
                 "drinkAlternate": { "type": "string" },
                 "category": { "type": "string" },
@@ -985,6 +959,56 @@
           ]
         }
       },
+      "FindRecipeByIdResponse": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "drink": { "type": "string" },
+          "drinkAlternate": { "type": "string" },
+          "category": { "type": "string" },
+          "alcoholic": { "type": "string" },
+          "glass": { "type": "string" },
+          "instructions": { "type": "string" },
+          "drinkThumb": { "type": "string" },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "_id": { "type": "string" },
+                "title": { "type": "string" },
+                "measure": { "type": "string" }
+              },
+              "favorites": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "owner": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "example": {
+          "_id": "ID",
+          "drink": "Name Cocktail",
+          "drinkAlternate": "About",
+          "category": "Ordinary Drink",
+          "alcoholic": "Alcoholic",
+          "glass": "Wine glass",
+          "instructions": "Instructions",
+          "drinkThumb": "image.jpg",
+          "ingredients": [
+            {
+              "_id": "ID",
+              "title": "name ingredient",
+              "measure": "1 shot"
+            }
+          ],
+          "owner": "ID",
+          "favorites": ["ID", "ID"]
+        }
+      },
       "MainResponse": {
         "type": "object",
         "properties": {
@@ -997,7 +1021,10 @@
               "type": "object",
               "properties": {
                 "_id": { "type": "string" },
-                "favorites": { "type": "array", "items": { "type": "string" } },
+                "favorites": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
                 "drink": { "type": "string" },
                 "drinkAlternate": { "type": "string" },
                 "category": { "type": "string" },
@@ -1068,6 +1095,129 @@
             ]
           }
         ]
+      },
+      "CaterogiesExample": {
+        "type": "string",
+        "enum": [
+          "Ordinary Drink",
+          "Cocktail",
+          "Shake",
+          "Other/Unknown",
+          "Cocoa",
+          "Shot",
+          "Coffee/Tea",
+          "Homemade Liqueur",
+          "Punch/Party Drink",
+          "Beer",
+          "Soft Drink"
+        ],
+        "description": "Category of cocktail"
+      },
+      "IngredientsExample": {
+        "type": "string",
+        "enum": [
+          "Light rum",
+          "Dry Vermouth",
+          "Bourbon",
+          "Dark rum",
+          "Sugar",
+          "Southern Comfort",
+          "Tequila",
+          "Añejo rum",
+          "Sherry",
+          "Yoghurt",
+          "Kiwi",
+          "Egg",
+          "Irish cream",
+          "Chocolate liqueur",
+          "Rum",
+          "Ouzo",
+          "Sloe gin",
+          "Coffee",
+          "Creme de Cassis",
+          "Lemon juice",
+          "Chocolate",
+          "Midori melon liqueur",
+          "Peppermint schnapps",
+          "Vodka",
+          "Milk",
+          "Espresso",
+          "Applejack",
+          "Apple brandy",
+          "Port",
+          "Cognac",
+          "Pineapple juice",
+          "Champagne",
+          "Bitters",
+          "Coffee brandy",
+          "Mango",
+          "Cocoa powder",
+          "Sweet Vermouth",
+          "Triple sec",
+          "Blended whiskey",
+          "Lime",
+          "Angelica root",
+          "Ale",
+          "Apricot brandy",
+          "Brandy",
+          "Grenadine",
+          "Ricard",
+          "Sugar syrup",
+          "Berries",
+          "Cranberry juice",
+          "Peach nectar",
+          "Cider",
+          "Sprite",
+          "Orange bitters",
+          "Lemon vodka",
+          "Coffee liqueur",
+          "Carbonated water",
+          "Kahlua",
+          "Apple juice",
+          "Cantaloupe",
+          "Spiced rum",
+          "Water",
+          "Lemon",
+          "Pisco",
+          "7-Up",
+          "Tomato juice",
+          "Heavy cream",
+          "Apple cider",
+          "Everclear",
+          "Grape juice",
+          "Firewater",
+          "Whiskey",
+          "Scotch",
+          "Gin",
+          "Grapes",
+          "Strawberry schnapps",
+          "Cherry brandy",
+          "Red wine",
+          "Strawberries",
+          "Chocolate syrup",
+          "Galliano",
+          "Orange",
+          "Johnnie Walker",
+          "Egg yolk",
+          "Sambuca",
+          "Blackberry brandy",
+          "Amaretto",
+          "Dubonnet Rouge",
+          "Creme de Cacao",
+          "Lager",
+          "Absolut Citron",
+          "demerara Sugar",
+          "Grapefruit juice",
+          "Lemonade",
+          "Tea",
+          "Watermelon",
+          "Lime juice",
+          "Irish whiskey",
+          "Ginger",
+          "Peach Vodka",
+          "Cranberries"
+        ],
+        "description": "Ingredient of cocktail"
       }
     },
     "securitySchemes": {
