@@ -21,7 +21,7 @@ authRouter.get("/current", authenticateToken, getCurrent);
 authRouter.post(
   "/update",
   authenticateToken,
-  upload.single("avatar"),
+  upload.single("avatarURL"),
   updateUser
 );
 
