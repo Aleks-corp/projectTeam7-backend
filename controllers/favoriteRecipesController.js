@@ -24,14 +24,14 @@ const addFavoriteRecipe = async (req, res) => {
     throw ApiError(404);
   }
   if (recipe.favorites.includes(_id)) {
-    throw ApiError(400, "This recipe exist in favorites");
+    throw ApiError(400, "This recipe is already in favorites");
   } else {
     await Recipe.findByIdAndUpdate(
       id,
       { $push: { favorites: _id } },
       { new: true }
     );
-    res.status(201).json({ message: "added to favorite" });
+    res.status(201).json({ id, message: "Recipe added to favorites" });
   }
 };
 
@@ -48,9 +48,9 @@ const removeFavoriteRecipe = async (req, res) => {
       { $pull: { favorites: _id } },
       { new: true }
     );
-    res.json({ message: "Recipe deleted from favorites" });
+    res.json({ id, message: "Recipe deleted from favorites" });
   } else {
-    throw ApiError(400, "This recipe NOT exist in favorites");
+    throw ApiError(400, "This recipe hasn't been added to favorites");
   }
 };
 
