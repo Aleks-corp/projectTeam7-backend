@@ -2,7 +2,22 @@ import { Schema, model } from "mongoose";
 
 import { handleUpdateValidator, handlerSaveError } from "./hooks.js";
 import { glassList, categoryList } from "../constants/constants.js";
-import { ingredientSchema } from "./ingredient.js";
+
+const ingredientSchema  =  new Schema({
+  title: {
+  type: String,
+  required: [true, "Set at least one ingridient"]
+},
+  measure: {
+    type: String,
+    required: [true, "Set ingredient's measure"],
+  }, 
+  ingredientThumb: String
+});
+
+const favoritesSchema = new Schema({
+  type: Schema.Types.ObjectId,
+});
 
 const recipeSchema = new Schema(
   {
@@ -55,8 +70,7 @@ const recipeSchema = new Schema(
 
     ingredients: {
       type: [ingredientSchema],
-      ref: "ingredient",
-      required: [true, "Set ingridients for recipe"],
+      required: true,
     },
 
     owner: {
@@ -66,8 +80,9 @@ const recipeSchema = new Schema(
     },
 
     favorites: {
-      type: [Schema.Types.ObjectId],
-      ref: "user",
+      type: [favoritesSchema],
+      required: true,
+
     },
   },
   { versionKey: false, timestamps: true }

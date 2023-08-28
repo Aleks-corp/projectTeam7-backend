@@ -3,6 +3,7 @@ import {
   isEmptyBody,
   isValidId,
   authenticateToken,
+  upload
 } from "../../middlewares/index.js";
 import { validateBody } from "../../decorators/index.js";
 import { recipesSchemas } from "../../schemas/index.js";
@@ -19,6 +20,7 @@ ownRecipesRouter.get("/", getOwnRecipes);
 
 ownRecipesRouter.post(
   "/",
+  upload.single("drinkThumb"),
   isEmptyBody,
   validateBody(recipeAddSchema),
   addOwnRecipe
