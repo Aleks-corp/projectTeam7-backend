@@ -33,7 +33,14 @@ const recipeAddSchema = Joi.object({
     "string.empty": `'drinkThumb' cannot be an empty field`,
     "any.required": `missing required 'drinkThumb' field`,
   }),
-  ingredients: Joi.array().items(Joi.string()).unique().required().messages({
+  ingredients: Joi.array().items(
+    Joi.object({
+      id: Joi.string().required().messages({
+        "id.empty": `'ingredient id' cannot be an empty`}),
+      measure: Joi.string().required().messages({
+        "measure.empty": `'ingredient measure' cannot be an empty`}),
+    })
+    ).required().messages({
     "array.empty": `'ingredients' cannot be an empty array`,
     "any.required": `missing required 'ingredients'`,
   }),

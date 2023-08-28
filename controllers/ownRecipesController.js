@@ -1,12 +1,9 @@
-import { ApiError } from "../helpers/index.js";
+import { ApiError, cloudinary } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
 import Recipe from "../models/recipe.js";
 import Ingredient from "../models/ingredient.js";
-import path from "path";
 import fs from "fs/promises";
 import Jimp from "jimp";
-
-const photoOwnRecipePath = path.resolve("public", "recipes");
 
 const getOwnRecipes = async (req, res) => {
   const { _id: owner } = req.user;
@@ -14,7 +11,7 @@ const getOwnRecipes = async (req, res) => {
   const skip = (page - 1) * limit;
   const recipes = await Recipe.find(
     { owner, ...query },
-    "-owner -createdAt -updatedAt",
+    "drink drinkAlternate drinkThumb ingredients",
     { skip, limit }
   );
   const totalHits = await Recipe.count({ owner, ...query });
@@ -22,24 +19,43 @@ const getOwnRecipes = async (req, res) => {
 };
 
 const addOwnRecipe = async (req, res) => {
-  const {_id: owner} = req.user;
-  const { path: tempPath, filename } = req.file;
+  const { _id: owner } = req.user;
+  const { path: tempPath } = req.file;
 
   try {
     const image = await Jimp.read(tempPath);
-    await image.resize(250, 250).write(tempPath);
-  }catch {
-    httpError(400, 'File cannot be upload')
+    await image.resize(400, 400).write(tempPath);
+  } catch {
+    ApiError(400, 'File cannot be upload')
   };
 
-  const newPath = path.join(photoOwnRecipePath, filename);
-  await fs.rename(tempPath, newPath);
-  const photo = path.join("recipes", filename);
+  const { url: drinkThumb } = await cloudinary.uploader.upload(tempPath, { folder: "recipes" });
 
-  const ingredients = await Ingredient.find(
-    { _id: { $in: req.body.ingredients } });
+  await fs.unlink(tempPath);
 
-  const result = await Recipe.create({...req.body, owner, ingredients,  drinkThumb: photo
+  const requestedIngredients = req.body.ingredients;
+
+  const storagedIngredients = await Ingredient.find(
+    { _id: { $in: requestedIngredients } });
+
+  const ingredients = requestedIngredients.map(ingredient => {
+    const stIng = storagedIngredients.find(element => element._id == ingredient.id);
+    if (!stIng) {
+      ApiError(400, `Ingredient with id ${ingredient.id} is absent`)
+    }
+    const newIngr = {
+      title: stIng.title,
+      measure: ingredient.measure,
+      ingredientThumb: stIng.ingredientThumb
+    }
+    return newIngr
+  })
+
+  const result = await Recipe.create({
+    ...req.body,
+    owner,
+    ingredients,
+    drinkThumb
   })
   res.status(201).json(result)
 };
@@ -48,12 +64,12 @@ const addOwnRecipe = async (req, res) => {
 
 const removeOwnRecipe = async (req, res) => {
 
-  const {_id: owner} = req.user;
-  const result = await Recipe.findOneAndRemove({owner, _id:req.params.id})
+  const { _id: owner } = req.user;
+  const result = await Recipe.findOneAndRemove({ owner, _id: req.params.id })
   if (!result) {
-    throw httpError(404);
+    throw ApiError(404);
   }
-  res.json({ message: "Recipe deleted from own" });
+  res.json({ id: result._id, message: "Recipe is deleted" });
 };
 
 export default {
