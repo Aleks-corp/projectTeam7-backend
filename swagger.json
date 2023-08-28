@@ -149,7 +149,7 @@
     "/auth/update": {
       "post": {
         "tags": ["Auth"],
-        "summary": "Update user's name or avatar (DON'T WORK)",
+        "summary": "Update user's name or avatar",
         "parameters": [],
         "security": [{ "Bearer": [] }],
         "requestBody": {
@@ -644,7 +644,7 @@
     "/subscribe": {
       "post": {
         "tags": ["Subscription"],
-        "summary": "Send mail to start subscription on news (DON'T WORK)",
+        "summary": "Send mail to start subscription on news",
         "parameters": [],
         "security": [{ "Bearer": [] }],
         "requestBody": {
