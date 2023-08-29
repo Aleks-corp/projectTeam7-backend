@@ -3,21 +3,21 @@ import { Schema, model } from "mongoose";
 import { handleUpdateValidator, handlerSaveError } from "./hooks.js";
 import { glassList, categoryList } from "../constants/constants.js";
 
-const ingredientSchema  =  new Schema({
+const ingredientSchema = new Schema({
   title: {
-  type: String,
-  required: [true, "Set at least one ingridient"]
-},
+    type: String,
+    required: [true, "Set at least one ingridient"],
+  },
   measure: {
     type: String,
     required: [true, "Set ingredient's measure"],
-  }, 
-  ingredientThumb: String
+  },
+  ingredientThumb: String,
 });
 
-const favoritesSchema = new Schema({
-  type: Schema.Types.ObjectId,
-});
+// const favoritesSchema = new Schema({
+//   type: Schema.Types.ObjectId,
+// });
 
 const recipeSchema = new Schema(
   {
@@ -80,9 +80,8 @@ const recipeSchema = new Schema(
     },
 
     favorites: {
-      type: [favoritesSchema],
+      type: [Schema.Types.ObjectId],
       required: true,
-
     },
   },
   { versionKey: false, timestamps: true }
