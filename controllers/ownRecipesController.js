@@ -19,6 +19,7 @@ const getOwnRecipes = async (req, res) => {
 
 const addOwnRecipe = async (req, res) => {
   const { _id: owner } = req.user;
+
   const { path: tempPath } = req.file;
 
   const { url: drinkThumb } = await cloudinary.uploader.upload(tempPath, {
@@ -35,19 +36,22 @@ const addOwnRecipe = async (req, res) => {
   const storagedIngredients = await Ingredient.find({
     _id: { $in: requestedIngredients },
   });
-
+ 
   const ingredients = requestedIngredients.map(ingredient => {
     const stIng = storagedIngredients.find(
-      element => element._id === ingredient.id
+      element => element._id.toString() === ingredient.id.toString()
     );
+
     if (!stIng) {
       ApiError(400, `Ingredient with id ${ingredient.id} is absent`);
     }
+
     const newIngr = {
       title: stIng.title,
       measure: ingredient.measure,
       ingredientThumb: stIng.ingredientThumb,
     };
+
     return newIngr;
   });
 
