@@ -71,29 +71,43 @@ const getCurrent = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  if (!req.file) throw ApiError(400);
   const name = req.body.name;
+
+  if (!req.file && !name) throw ApiError(400, "Missing fields");
+
   const { _id } = req.user;
-  const { path } = req.file;
+  if (req.file) {
+    const { path } = req.file;
 
-  const result = await cloudinary.uploader.upload(path, {
-    folder: "project-seven/avatar",
-    width: 100,
-    height: 100,
-    crop: "fill",
-  });
-  const avatarURL = result.url;
+    const result = await cloudinary.uploader.upload(path, {
+      folder: "project-seven/avatar",
+      width: 100,
+      height: 100,
+      crop: "fill",
+    });
+    const avatarURL = result.url;
 
-  await User.findOneAndUpdate(
-    _id,
-    { avatarURL, name },
-    {
-      new: true,
-    }
-  );
+    await User.findOneAndUpdate(
+      _id,
+      { avatarURL, name },
+      {
+        new: true,
+      }
+    );
 
-  res.json({ avatarURL, name });
-  await fs.unlink(path);
+    res.json({ avatarURL, name });
+    await fs.unlink(path);
+  } else {
+    await User.findOneAndUpdate(
+      _id,
+      { avatarURL: req.user.avatarURL, name },
+      {
+        new: true,
+      }
+    );
+
+    res.json({ avatarURL: req.user.avatarURL, name });
+  }
 };
 
 export default {
