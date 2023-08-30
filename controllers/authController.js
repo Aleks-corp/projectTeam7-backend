@@ -13,7 +13,7 @@ const { JWT_SECRET } = process.env;
 const signUp = async (req, res) => {
   const { email, password } = req.body;
   const avatarURL =
-    "https://res.cloudinary.com/deeooeyeg/image/upload/v1693065810/Media/temp-avatar-user_hbvjcp.png";
+    "https://res.cloudinary.com/dqo3b0vnm/image/upload/v1693246270/project-seven/avatar/user_test_avatar_xda0nz.png";
   const user = await User.findOne({ email });
   if (user) {
     throw ApiError(409, "Email in use");
