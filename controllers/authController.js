@@ -71,10 +71,9 @@ const getCurrent = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const name = req.body.name;
+  if (!req.file && !req.body.name) throw ApiError(400, "Missing fields");
 
-  if (!req.file && !name) throw ApiError(400, "Missing fields");
-
+  const { name } = req.body;
   const { _id } = req.user;
   if (req.file) {
     const { path } = req.file;

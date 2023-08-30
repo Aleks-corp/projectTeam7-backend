@@ -1,6 +1,6 @@
-import { ApiError } from '../helpers/index.js';
+import { ApiError } from "../helpers/index.js";
 
-const validateBody = (schema) => {
+const validateBody = schema => {
   const func = (req, res, next) => {
     const { error } = schema.validate(req.body);
     if (error) {

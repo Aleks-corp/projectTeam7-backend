@@ -1,7 +1,7 @@
-import multer from 'multer';
-import path from 'path';
+import multer from "multer";
+import path from "path";
 
-const tempPash = path.resolve('temp');
+const tempPash = path.resolve("temp");
 
 const storage = multer.diskStorage({
   destination: tempPash,

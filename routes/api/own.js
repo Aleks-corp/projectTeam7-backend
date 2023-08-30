@@ -3,7 +3,7 @@ import {
   isEmptyBody,
   isValidId,
   authenticateToken,
-  upload
+  upload,
 } from "../../middlewares/index.js";
 import { validateBody } from "../../decorators/index.js";
 import { recipesSchemas } from "../../schemas/index.js";

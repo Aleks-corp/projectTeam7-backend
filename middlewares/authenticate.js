@@ -1,16 +1,16 @@
-import jwt from 'jsonwebtoken';
-import 'dotenv/config';
+import jwt from "jsonwebtoken";
+import "dotenv/config";
 
-import { ctrlWrapper } from '../decorators/index.js';
-import { ApiError } from '../helpers/index.js';
-import User from '../models/user.js';
+import { ctrlWrapper } from "../decorators/index.js";
+import { ApiError } from "../helpers/index.js";
+import User from "../models/user.js";
 
 const { JWT_SECRET } = process.env;
 
 const authenticateToken = async (req, res, next) => {
-  const { authorization = '' } = req.headers;
-  const [bearer, token] = authorization.split(' ');
-  if (bearer !== 'Bearer') {
+  const { authorization = "" } = req.headers;
+  const [bearer, token] = authorization.split(" ");
+  if (bearer !== "Bearer") {
     throw ApiError(401);
   }
   try {
