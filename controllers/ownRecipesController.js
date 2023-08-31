@@ -31,28 +31,24 @@ const addOwnRecipe = async (req, res) => {
 
   await fs.unlink(tempPath);
 
-  const requestedIngredients = req.body.ingredients;
-
+  const requestedIngredients = req.body.ingredients.map(({title}) => title);
+  
   const storagedIngredients = await Ingredient.find({
-    _id: { $in: requestedIngredients },
+    title: { $in: requestedIngredients },
   });
  
-  const ingredients = requestedIngredients.map(ingredient => {
+  const ingredients = req.body.ingredients.map(ingredient => {
     const stIng = storagedIngredients.find(
-      element => element._id.toString() === ingredient.id.toString()
+      element => element.title === ingredient.title
     );
 
-    if (!stIng) {
-      ApiError(400, `Ingredient with id ${ingredient.id} is absent`);
-    }
-
-    const newIngr = {
-      title: stIng.title,
+    const recipeIngr = {
+      title: ingredient.title,
       measure: ingredient.measure,
       ingredientThumb: stIng.ingredientThumb,
     };
 
-    return newIngr;
+    return recipeIngr;
   });
 
   const result = await Recipe.create({
