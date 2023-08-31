@@ -35,8 +35,8 @@ const recipeAddSchema = Joi.object({
   }),
   ingredients: Joi.array().items(
     Joi.object({
-      id: Joi.string().required().messages({
-        "id.empty": `'ingredient id' cannot be an empty`}),
+      title: Joi.string().required().messages({
+        "title.empty": `'ingredient title' cannot be an empty`}),
       measure: Joi.string().required().messages({
         "measure.empty": `'ingredient measure' cannot be an empty`}),
     })
