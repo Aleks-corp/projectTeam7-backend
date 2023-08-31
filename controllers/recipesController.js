@@ -28,16 +28,8 @@ const getRecipesForMain = async (req, res) => {
         favoritesCount: { $size: { $ifNull: ["$favorites", []] } },
       },
     },
-    {
-      $sort: {
-        favoritesCount: -1,
-      },
-    },
-    {
-      $project: {
-        favoritesCount: 0,
-      },
-    },
+    { $sort: { favoritesCount: -1 } },
+    { $project: { favoritesCount: 0 } },
     {
       $group: {
         _id: "$category",
@@ -45,12 +37,8 @@ const getRecipesForMain = async (req, res) => {
         recipes: { $push: "$$ROOT" },
       },
     },
-    {
-      $sort: { recipeCount: -1 },
-    },
-    {
-      $limit: 4,
-    },
+    { $sort: { recipeCount: -1 } },
+    { $limit: 4 },
     {
       $project: {
         recipes: {
@@ -61,6 +49,21 @@ const getRecipesForMain = async (req, res) => {
         },
       },
     },
+  ]);
+
+  res.json(recipes);
+};
+
+const getPopularRecipes = async (req, res) => {
+  const recipes = await Recipe.aggregate([
+    {
+      $addFields: {
+        favoritesCount: { $size: { $ifNull: ["$favorites", []] } },
+      },
+    },
+    { $sort: { favoritesCount: -1 } },
+    { $project: { favoritesCount: 0 } },
+    { $limit: 4 },
   ]);
 
   res.json(recipes);
@@ -82,4 +85,5 @@ export default {
 
   getRecipesForMain: ctrlWrapper(getRecipesForMain),
   getRecipeById: ctrlWrapper(getRecipeById),
+  getPopularRecipes: ctrlWrapper(getPopularRecipes),
 };

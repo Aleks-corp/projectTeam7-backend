@@ -8,6 +8,7 @@ const {
   getCategoryList,
   getGlassList,
   getIngredientsList,
+  getPopularRecipes,
 } = recipesController;
 
 const recipesRouter = express.Router();
@@ -18,6 +19,7 @@ recipesRouter.get("/category", getCategoryList);
 recipesRouter.get("/glass", getGlassList);
 recipesRouter.get("/ingredients", getIngredientsList);
 
+recipesRouter.get("/popular", getPopularRecipes);
 recipesRouter.get("/", getRecipesForMain);
 recipesRouter.get("/:id", isValidId, getRecipeById);
 

@@ -21,7 +21,8 @@ const getByName = async (req, res) => {
       query.category = category;
     }
 
-    const totalCocktailsCount = await Recipe.countDocuments(query).exec();
+    const totalCocktailsCount = await Recipe.count(query);
+    const totalPages = Math.ceil(totalCocktailsCount / parseInt(limit));
     const matchingCocktails = await Recipe.find(query)
       .skip(skipAmount)
       .limit(parseInt(limit));
@@ -29,6 +30,7 @@ const getByName = async (req, res) => {
     res.json({
       page: parseInt(page),
       perPage: parseInt(limit),
+      totalPages,
       totalCocktails: totalCocktailsCount,
       cocktails: matchingCocktails,
     });
