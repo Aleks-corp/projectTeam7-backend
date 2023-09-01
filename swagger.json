@@ -497,12 +497,18 @@
         "security": [{ "Bearer": [] }],
         "parameters": [],
         "requestBody": {
-          "description": "Registration's object",
+          "description": "Add recipe",
           "required": true,
           "content": {
             "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/AddRecipeRequest"
+              },
+              "encoding": {
+                "ingredients": {
+                  "style": "form",
+                  "explode": true
+                }
               }
             }
           }
@@ -1338,13 +1344,13 @@
             "items": {
               "type": "object",
               "properties": {
-                "title": { "type": "string", "example": "Gin" },
-                "measure": { "type": "string", "example": "1/2 oz" }
+                "title": { "type": "string" },
+                "measure": { "type": "string" }
               }
             },
             "example": [
-              { "title": "Gin", "measure": "1/4 oz" },
-              { "title": "Vodka", "measure": "1/2 oz" }
+              { "title": "pp", "measure": "II" },
+              { "title": "fg", "measure": "fgh" }
             ]
           }
         }

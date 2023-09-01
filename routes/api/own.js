@@ -4,6 +4,7 @@ import {
   isValidId,
   authenticateToken,
   upload,
+  parseJson,
 } from "../../middlewares/index.js";
 import { validateBody } from "../../decorators/index.js";
 import { recipesSchemas } from "../../schemas/index.js";
@@ -22,6 +23,7 @@ ownRecipesRouter.post(
   "/",
   upload.single("drinkThumb"),
   isEmptyBody,
+  parseJson,
   validateBody(recipeAddSchema),
   addOwnRecipe
 );
