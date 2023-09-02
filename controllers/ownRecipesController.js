@@ -20,23 +20,27 @@ const getOwnRecipes = async (req, res) => {
 const addOwnRecipe = async (req, res) => {
   const { _id: owner } = req.user;
 
+  let drinkThumb = '';
+  if (req.file){
   const { path: tempPath } = req.file;
 
-  const { url: drinkThumb } = await cloudinary.uploader.upload(tempPath, {
+  const { url } = await cloudinary.uploader.upload(tempPath, {
     folder: "recipes",
     width: 400,
     height: 400,
     crop: "fill",
   });
 
+  drinkThumb = url;
   await fs.unlink(tempPath);
+}
 
-  const requestedIngredients = req.body.ingredients.map(({title}) => title);
-  
+  const requestedIngredients = req.body.ingredients.map(({title}) => title); 
+
   const storagedIngredients = await Ingredient.find({
     title: { $in: requestedIngredients },
   });
- 
+
   const ingredients = req.body.ingredients.map(ingredient => {
     const stIng = storagedIngredients.find(
       element => element.title === ingredient.title
