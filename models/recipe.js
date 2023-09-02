@@ -63,11 +63,8 @@ const recipeSchema = new Schema(
       required: [true, "Set instruction for recipe"],
     },
 
-    drinkThumb: {
-      type: String,
-      required: [true, "Set image for recipe"],
-    },
-
+    drinkThumb: String,
+      
     ingredients: {
       type: [ingredientSchema],
       required: true,
