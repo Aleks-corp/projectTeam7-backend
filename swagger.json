@@ -170,6 +170,10 @@
               }
             }
           },
+          "400": {
+            "description": "Bad request (empty body or some fields)",
+            "content": {}
+          },
           "401": {
             "description": "Not authorized",
             "content": {}
@@ -573,6 +577,23 @@
               }
             }
           },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Message",
+                      "example": "This recipe isn't yours"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "404": {
             "description": "Not Found",
             "content": {}
@@ -640,7 +661,8 @@
                 "properties": {
                   "id": {
                     "type": "string",
-                    "description": "Recipe ID"
+                    "description": "Recipe ID",
+                    "example": "Recipe ID"
                   }
                 }
               }
@@ -663,14 +685,14 @@
                   },
                   "example": {
                     "id": "RECIPE_ID",
-                    "example": "Recipe added to favorites"
+                    "message": "Recipe added to favorites"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request",
+            "description": "Bad request (Empty Body or recipe is in favorites)",
             "content": {
               "application/json": {
                 "schema": {
@@ -1303,55 +1325,50 @@
       },
       "AddRecipeRequest": {
         "type": "object",
-        "required": [
-          "drinkThumb",
-          "drink",
-          "drinkAlternate",
-          "category",
-          "glass",
-          "instructions",
-          "ingredients"
-        ],
+        "required": ["drinkThumb", "data"],
         "properties": {
           "drinkThumb": {
             "type": "string",
             "description": "Upload file",
             "format": "binary"
           },
-          "drink": {
-            "type": "string",
-            "description": "Cocktail's name",
-            "example": "Martini"
-          },
-          "drinkAlternate": {
-            "type": "string",
-            "description": "Cocktail's description",
-            "example": "About my Martini"
-          },
-          "category": {
-            "$ref": "#/components/schemas/CaterogiesExample"
-          },
-          "glass": {
-            "$ref": "#/components/schemas/GlassesExample"
-          },
-          "instructions": {
-            "type": "string",
-            "description": "Choose category",
-            "example": "First shake then drink"
-          },
-          "ingredients": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "title": { "type": "string" },
-                "measure": { "type": "string" }
+          "data": {
+            "type": "object",
+            "description": "JSON Object",
+            "properties": {
+              "drink": { "type": "string" },
+              "drinkAlternate": { "type": "string" },
+              "category": { "type": "string" },
+              "glass": { "type": "string" },
+              "instructions": { "type": "string" },
+              "ingredients": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "title": { "type": "string" },
+                    "measure": { "type": "string" }
+                  }
+                }
               }
             },
-            "example": [
-              { "title": "pp", "measure": "II" },
-              { "title": "fg", "measure": "fgh" }
-            ]
+            "example": {
+              "drink": "Martini",
+              "drinkAlternate": "All About Martini",
+              "category": "Cocktail",
+              "glass": "Martini Glass",
+              "instructions": "Shack and Drink",
+              "ingredients": [
+                {
+                  "title": "Gin",
+                  "measure": "1/2 oz"
+                },
+                {
+                  "title": "Bitters",
+                  "measure": "1/2 oz"
+                }
+              ]
+            }
           }
         }
       },
