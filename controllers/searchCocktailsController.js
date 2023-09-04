@@ -9,17 +9,11 @@ const getByName = async (req, res) => {
   try {
     const query = {};
 
-    if (name) {
-      query.drink = { $regex: name, $options: "i" };
-    }
+    name && (query.drink = { $regex: name, $options: "i" });
 
-    if (ingredient) {
-      query["ingredients.title"] = ingredient;
-    }
+    ingredient && (query["ingredients.title"] = ingredient);
 
-    if (category) {
-      query.category = category;
-    }
+    category && (query.category = category);
 
     const totalCocktailsCount = await Recipe.count(query);
     const totalPages = Math.ceil(totalCocktailsCount / parseInt(limit));

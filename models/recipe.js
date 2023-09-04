@@ -15,10 +15,6 @@ const ingredientSchema = new Schema({
   ingredientThumb: String,
 });
 
-// const favoritesSchema = new Schema({
-//   type: Schema.Types.ObjectId,
-// });
-
 const recipeSchema = new Schema(
   {
     drink: {
@@ -64,7 +60,7 @@ const recipeSchema = new Schema(
     },
 
     drinkThumb: String,
-      
+
     ingredients: {
       type: [ingredientSchema],
       required: true,
@@ -78,6 +74,7 @@ const recipeSchema = new Schema(
 
     favorites: {
       type: [Schema.Types.ObjectId],
+      ref: "user",
       required: true,
     },
   },

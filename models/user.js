@@ -23,6 +23,8 @@ const userSchema = new Schema(
     },
     avatarURL: {
       type: String,
+      default:
+        "https://res.cloudinary.com/dqo3b0vnm/image/upload/v1693246270/project-seven/avatar/user_test_avatar_xda0nz.png",
       required: true,
     },
     token: {
