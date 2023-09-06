@@ -11,7 +11,7 @@ const subscribe = async (req, res) => {
     from: EMAIL_SEND_FROM,
     subject: "Subscription successfull",
     text: "Your have subscribe to our newsletter",
-    html: `<h2>Your have subscribe to newsletter and new recipes in Drunk Master</h2>`,
+    html: `<h2>Your have subscribe to newsletter and new recipes in Drink Master</h2>`,
   };
   await sendMail(msg);
 
